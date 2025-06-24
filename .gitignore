@@ -1,3 +1,46 @@
-node_modules
-# Keep environment variables out of version control
+# Global ignores
 .env
+.DS_Store
+*.log
+logs/
+*.pid
+*.seed
+
+# OS-specific files
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Ignore coverage reports
+coverage/
+*.lcov
+
+# -------------------------
+# timesnap-client (React)
+# -------------------------
+timesnap-client/node_modules/
+timesnap-client/build/
+timesnap-client/.env
+timesnap-client/.next/
+timesnap-client/.parcel-cache/
+timesnap-client/.turbo/
+
+# -------------------------
+# timesnap-server (Node.js + Prisma)
+# -------------------------
+timesnap-server/node_modules/
+timesnap-server/.env
+timesnap-server/prisma/dev.db
+timesnap-server/prisma/dev.db-journal
+
+# Optional: exclude Prisma generated SQL
+timesnap-server/prisma/migrations/*/migration.sql
