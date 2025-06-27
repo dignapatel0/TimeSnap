@@ -21,8 +21,13 @@ const port = process.env.PORT || 5000;
 // Middleware setup
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
 app.use(morgan('tiny'));
+
+app.use(cors({
+  origin: 'http://localhost:5173',  // React frontend URL
+  credentials: true                 // allow cookies/session
+}));
+
 
 // Session + Flash middleware BEFORE routes
 app.use(session({

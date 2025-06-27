@@ -1,5 +1,8 @@
+// src/routes/admin-auth-router.ts
+
 import { Router } from 'express';
 import prisma from '../utils/prisma-client';
+import bcrypt from 'bcryptjs';
 
 export const adminAuthRouter = Router();
 
@@ -11,7 +14,7 @@ adminAuthRouter.get('/login', (req, res) => {
 
   res.render('login', {
     title: 'Admin Login',
-    layout: false 
+    layout: false,
   });
 });
 
@@ -27,12 +30,23 @@ adminAuthRouter.post('/login', async (req, res) => {
       },
     });
 
-    if (!admin || password !== 'admin123') {
+    if (!admin || !admin.password) {
       req.flash('error', 'Invalid email or password');
       return res.redirect('/admin/login');
     }
 
-    req.session.admin = admin;
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      req.flash('error', 'Invalid email or password');
+      return res.redirect('/admin/login');
+    }
+
+    req.session.admin = {
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+    };
+
     res.redirect('/admin/dashboard');
   } catch (err) {
     console.error('Login error:', err);
