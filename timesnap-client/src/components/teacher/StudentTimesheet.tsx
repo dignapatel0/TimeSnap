@@ -1,41 +1,49 @@
-type Props = {
-  courseId: number;
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+type Task = {
+  id: number;
+  title: string;
+  elapsed_time: number;
+  estimated_time: number;
+  student: {
+    name: string;
+    email: string;
+  };
 };
 
-export const StudentTimesheet = ({ courseId }: Props) => {
-  const students = [
-    {
-      id: 1,
-      name: 'John Doe',
-      tasks: [
-        { title: 'Navbar UI', actualTime: 45 },
-        { title: 'Fix bugs', actualTime: 30 },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      tasks: [
-        { title: 'Wireframe Design', actualTime: 60 },
-      ],
-    },
-  ]; // TODO: Replace with API
+export const StudentTimesheet = ({ courseId }: { courseId: number }) => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:5000/task/course/${courseId}`)
+      .then(res => setTasks(res.data))
+      .catch(err => console.error('Error loading tasks:', err));
+  }, [courseId]);
 
   return (
     <div>
-      <h5>Students in Course #{courseId}</h5>
-      {students.map(student => (
-        <div key={student.id} className="mb-3">
-          <strong>{student.name}</strong>
-          <ul>
-            {student.tasks.map((task, idx) => (
-              <li key={idx}>
-                {task.title} – {task.actualTime} min
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <h5 className="mb-3">📝 Timesheet for Course #{courseId}</h5>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Task Title</th>
+            <th>Student</th>
+            <th>Estimated</th>
+            <th>Elapsed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map(task => (
+            <tr key={task.id}>
+              <td>{task.title}</td>
+              <td>{task.student.name} ({task.student.email})</td>
+              <td>{task.estimated_time} min</td>
+              <td>{task.elapsed_time} min</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

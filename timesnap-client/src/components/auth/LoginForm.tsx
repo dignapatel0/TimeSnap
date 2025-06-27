@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { AuthLayout } from './AuthLayout';
+import { useAuth } from '../../context/AuthContext';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth(); // Destructure login()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,9 +26,12 @@ export const LoginForm = () => {
 
       const user = response.data.user;
 
-      // Save user info to localStorage if needed
+      // Save user info to context
+      login(user); 
+
+      // Also save to localStorage if needed
       localStorage.setItem('userRole', user.role);
-      localStorage.setItem('userId', user.id);
+      localStorage.setItem('userId', user.id.toString());
 
       // Navigate to respective dashboard
       if (user.role === 'Teacher') {
