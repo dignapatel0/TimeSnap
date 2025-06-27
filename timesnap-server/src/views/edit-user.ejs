@@ -1,0 +1,25 @@
+<h3 class="mb-4">Edit User</h3>
+
+<form action="/admin/users/<%= user.id %>/edit" method="POST" class="bg-white p-4 rounded shadow-sm">
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" name="name" id="name" class="form-control" value="<%= user.name %>" required />
+  </div>
+  
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" name="email" id="email" class="form-control" value="<%= user.email %>" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="role" class="form-label">Role</label>
+    <select name="role" id="role" class="form-select">
+      <option value="Admin" <%= user.role === 'Admin' ? 'selected' : '' %>>Admin</option>
+      <option value="Teacher" <%= user.role === 'Teacher' ? 'selected' : '' %>>Teacher</option>
+      <option value="Student" <%= user.role === 'Student' ? 'selected' : '' %>>Student</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-success">Update</button>
+  <a href="/admin/users" class="btn btn-secondary ms-2">Cancel</a>
+</form>

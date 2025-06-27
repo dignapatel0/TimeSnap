@@ -1,0 +1,43 @@
+<h3 class="mb-4">Edit Task</h3>
+
+<form action="/admin/tasks/<%= task.id %>/edit" method="POST" class="shadow-sm p-4 bg-white rounded">
+  <div class="mb-3">
+    <label class="form-label">Title</label>
+    <input type="text" name="title" value="<%= task.title %>" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Estimated Time (in minutes)</label>
+    <input type="number" name="estimated_time" value="<%= task.estimated_time %>" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Elapsed Time (in minutes)</label>
+    <input type="number" name="elapsed_time" value="<%= task.elapsed_time %>" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Course</label>
+    <select name="course_id" class="form-select" required>
+      <% courses.forEach(course => { %>
+        <option value="<%= course.id %>" <%= course.id === task.course_id ? 'selected' : '' %>>
+          <%= course.title %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Student</label>
+    <select name="created_by" class="form-select" required>
+      <% students.forEach(student => { %>
+        <option value="<%= student.id %>" <%= student.id === task.created_by ? 'selected' : '' %>>
+          <%= student.name %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-success">Update Task</button>
+  <a href="/admin/tasks" class="btn btn-secondary ms-2">Cancel</a>
+</form>
