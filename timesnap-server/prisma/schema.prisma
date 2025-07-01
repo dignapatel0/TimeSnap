@@ -39,7 +39,6 @@ model Task {
   title          String   @db.VarChar(255)
   estimated_time Int
   elapsed_time   Int      @default(0)
-  created_at     DateTime @default(now())
   course_id      Int
   created_by     Int
 
