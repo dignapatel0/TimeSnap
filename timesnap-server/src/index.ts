@@ -32,17 +32,19 @@ app.use(cors({
   credentials: true
 }));
 
-
 // Session + Flash middleware BEFORE routes
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
   secret: 'timesnap_secret_key',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,       // Needed for HTTPS (Render is HTTPS by default)
-    sameSite: 'none'    // Needed for cross-site cookies (Vercel ↔ Render)
+    secure: isProduction,         // Use secure only in production (HTTPS)
+    sameSite: isProduction ? 'none' : 'lax' // Lax for dev, none for prod (cross-origin)
   }
 }));
+
 
 app.use(flash());
 app.use((req, res, next) => {
