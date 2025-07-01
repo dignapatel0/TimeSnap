@@ -4,8 +4,30 @@ import ExcelJS from 'exceljs';
 
 export const taskRouter = Router();
 
-// GET /task - Get all tasks with formatted time
+// GET /task - Support JSON API and Admin View
 taskRouter.get('/', async (req, res) => {
+  const courseId = req.query.courseId;
+  const studentId = req.query.studentId;
+
+  if (courseId && studentId) {
+    try {
+      const tasks = await prisma.task.findMany({
+        where: {
+          course_id: Number(courseId),
+          created_by: Number(studentId),
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      });
+      return res.json(tasks);
+    } catch (err) {
+      console.error('Error fetching filtered tasks:', err);
+      return res.status(500).json({ error: 'Failed to fetch filtered tasks' });
+    }
+  }
+
+  // Admin panel view
   try {
     const tasks = await prisma.task.findMany({
       include: {
@@ -14,7 +36,6 @@ taskRouter.get('/', async (req, res) => {
       },
     });
 
-    // Format time as hh:mm:ss
     const formatHMS = (minutes: number) => {
       const totalSeconds = minutes * 60;
       const h = Math.floor(totalSeconds / 3600);
