@@ -4,6 +4,7 @@ import { CourseList } from '../components/teacher/CourseList';
 import { StudentTimesheet } from '../components/teacher/StudentTimesheet';
 import { fetchCourses, deleteCourse } from '../api/courseApi';
 import { useAuth } from '../context/AuthContext';
+import { MainLayout } from '../pages/MainLayout'; 
 import type { Course } from '../types';
 
 const TeacherDashboard = () => {
@@ -48,14 +49,13 @@ const TeacherDashboard = () => {
   };
 
   return (
-    <div className="container py-5">
+    <MainLayout>
       <div className="text-center mb-5">
         <h2 className="fw-bold" style={{ color: '#6a4c93' }}>👩‍🏫 Welcome Teacher</h2>
         <p className="text-dark">You can manage your courses and view student timesheets below.</p>
       </div>
 
       <div className="row g-4">
-        {/* Add Course */}
         <div className="col-md-6">
           <div className="card shadow-sm" style={{ backgroundColor: '#f3e6ff', border: 'none' }}>
             <div className="card-header fw-bold" style={{ backgroundColor: '#a55eea', color: 'white' }}>
@@ -67,7 +67,6 @@ const TeacherDashboard = () => {
           </div>
         </div>
 
-        {/* Course List */}
         <div className="col-md-6">
           <div className="card shadow-sm" style={{ backgroundColor: '#e0f7f4', border: 'none' }}>
             <div className="card-header fw-bold" style={{ backgroundColor: '#00b894', color: 'white' }}>
@@ -90,7 +89,6 @@ const TeacherDashboard = () => {
         </div>
       </div>
 
-      {/* Timesheet */}
       {selectedCourseId && (
         <div className="mt-5">
           <div className="card shadow-sm" style={{ backgroundColor: '#fff8dc', border: 'none' }}>
@@ -103,7 +101,7 @@ const TeacherDashboard = () => {
           </div>
         </div>
       )}
-    </div>
+    </MainLayout>
   );
 };
 
