@@ -29,7 +29,7 @@ taskRouter.get('/', async (req, res) => {
       elapsed_time_hms: formatHMS(task.elapsed_time),
     }));
 
-    res.render('admin-tasks', { tasks: formattedTasks }); // Ensure your view file is admin-tasks.ejs
+    res.render('tasks', { tasks: formattedTasks });
   } catch (err) {
     console.error('Error fetching tasks:', err);
     res.status(500).json({ error: 'Failed to fetch tasks' });
