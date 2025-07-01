@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import prisma from '../utils/prisma-client';
+import ExcelJS from 'exceljs';
 
 export const taskRouter = Router();
 
@@ -111,3 +112,77 @@ taskRouter.delete('/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete task' });
   }
 });
+
+// Export completed tasks as Excel file
+taskRouter.get('/export/:studentId/:courseId', async (req, res) => {
+  const studentId = parseInt(req.params.studentId);
+  const courseId = parseInt(req.params.courseId);
+
+  try {
+    const student = await prisma.user.findUnique({
+      where: { id: studentId },
+    });
+
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
+    });
+
+    if (!student || !course) {
+      return res.status(404).json({ error: 'Student or course not found' });
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        created_by: studentId,
+        course_id: courseId,
+      },
+    });
+
+    const formatTime = (totalMinutes: number) => {
+      const totalSeconds = totalMinutes * 60;
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(`${course.title}_${course.course_code}`);
+
+    // Add headers
+    worksheet.addRow([
+      'Task Title',
+      'Estimated Time (hh:mm:ss)',
+      'Elapsed Time (hh:mm:ss)',
+      'Status',
+    ]);
+
+    // Add rows
+    tasks.forEach(task => {
+      const status = task.elapsed_time > 0 ? 'Done' : 'In Progress';
+
+      worksheet.addRow([
+        task.title,
+        formatTime(task.estimated_time),
+        formatTime(task.elapsed_time),
+        status,
+      ]);
+    });
+
+    // Auto column width
+    worksheet.columns.forEach(col => (col.width = 30));
+
+    // File name: Digna_Patel_Timesheet.xlsx
+    const filename = `${student.name.replace(/\s+/g, '_')}_Timesheet.xlsx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('Error exporting timesheet:', err);
+    res.status(500).json({ error: 'Failed to export timesheet' });
+  }
+});
+

@@ -13,6 +13,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.10.0",
     "bootstrap": "^5.3.6",
+    "exceljs": "^4.4.0",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",

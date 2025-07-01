@@ -18,7 +18,7 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
         <div className="container d-flex justify-content-between align-items-center">
           <h4 className="mb-0">TimeSnap</h4>
           <nav>
-            <span className="me-3">👋 {user?.name}</span>
+            <span className="me-3">Hello {user?.name}</span>
             <button onClick={handleLogout} className="btn btn-light btn-sm">Logout</button>
           </nav>
         </div>
