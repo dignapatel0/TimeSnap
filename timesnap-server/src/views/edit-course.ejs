@@ -1,0 +1,35 @@
+ <h3 class="mb-4">Edit Course</h3>
+
+<form action="/admin/courses/<%= course.id %>/edit" method="POST" class="bg-white p-4 rounded shadow-sm">
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Title</label>
+    <input type="text" class="form-control" name="title" value="<%= course.title %>" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Course Code</label>
+    <input type="text" class="form-control" name="course_code" value="<%= course.course_code %>" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Start Date</label>
+    <input type="date" class="form-control" name="start_date" value="<%= course.start_date.toISOString().split('T')[0] %>" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-semibold">End Date</label>
+    <input type="date" class="form-control" name="end_date" value="<%= course.end_date.toISOString().split('T')[0] %>" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Teacher</label>
+    <select name="created_by" class="form-select" required>
+      <% teachers.forEach(t => { %>
+        <option value="<%= t.id %>" <%= t.id === course.created_by ? 'selected' : '' %>><%= t.name %> (<%= t.email %>)</option>
+      <% }) %>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Update Course</button>
+  <a href="/admin/courses" class="btn btn-secondary ms-2">Cancel</a>
+</form>
