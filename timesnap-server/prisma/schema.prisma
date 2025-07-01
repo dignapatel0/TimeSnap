@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  password        String   
+  name            String   @db.VarChar(255)
+  role            String   // "Student" or "Teacher"
+
+  coursesCreated  Course[] @relation("TeacherCourses")
+  tasksCreated    Task[]   @relation("StudentTasks")
+
+  @@map("user")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(100)
+  course_code String   @unique @db.VarChar(100)
+  start_date  DateTime
+  end_date    DateTime
+  created_by  Int
+
+  teacher     User     @relation("TeacherCourses", fields: [created_by], references: [id])
+  tasks       Task[]
+
+  @@map("course")
+}
+
+model Task {
+  id             Int      @id @default(autoincrement())
+  title          String   @db.VarChar(255)
+  estimated_time Int
+  elapsed_time   Int      @default(0)
+  course_id      Int
+  created_by     Int
+
+  course Course @relation(fields: [course_id], references: [id])
+  student User  @relation("StudentTasks", fields: [created_by], references: [id])
+
+  @@map("task")
+}

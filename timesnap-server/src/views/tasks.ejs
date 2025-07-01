@@ -1,0 +1,35 @@
+<h3 class="mb-4">All Tasks</h3>
+
+<div class="table-responsive shadow-sm rounded bg-white">
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Estimated Time</th>
+        <th>Elapsed Time</th>
+        <th>Course</th>
+        <th>Student</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% tasks.forEach((task, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= task.title %></td>
+          <td><%= task.estimated_time %> mins</td>
+          <td><%= task.elapsed_time %> mins</td>
+          <td><%= task.course?.title || 'N/A' %></td>
+          <td><%= task.student?.name || 'N/A' %></td>
+          <td>
+            <a href="/admin/tasks/<%= task.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+            <form action="/admin/tasks/<%= task.id %>/delete" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

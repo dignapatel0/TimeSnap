@@ -1,0 +1,35 @@
+<h3 class="mb-4">All Courses</h3>
+
+<div class="table-responsive shadow-sm rounded bg-white">
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Course Code</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Created By</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% courses.forEach((course, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= course.title %></td>
+          <td><%= course.course_code %></td>
+          <td><%= new Date(course.start_date).toLocaleDateString() %></td>
+          <td><%= new Date(course.end_date).toLocaleDateString() %></td>
+          <td><%= course.teacher?.name || 'N/A' %></td>
+          <td>
+            <a href="/admin/courses/<%= course.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+            <form action="/admin/courses/<%= course.id %>/delete" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
