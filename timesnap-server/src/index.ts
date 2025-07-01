@@ -24,6 +24,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('tiny'));
 
+app.set('trust proxy', 1);
+
+// CORS setup
 app.use(cors({
   origin: [
     'http://localhost:5173',               // local dev
@@ -40,8 +43,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: isProduction,         // Use secure only in production (HTTPS)
-    sameSite: isProduction ? 'none' : 'lax' // Lax for dev, none for prod (cross-origin)
+    secure: isProduction,         
+    sameSite: isProduction ? 'none' : 'lax' 
   }
 }));
 
