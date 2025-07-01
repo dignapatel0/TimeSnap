@@ -12,6 +12,7 @@ import { courseRouter } from './routes/course-router';
 import { taskRouter } from './routes/task-router';
 import { adminRouter } from './routes/admin-router';
 import { adminAuthRouter } from './routes/admin-auth-router';
+import { teacherRouter } from './routes/teacher-router';
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/course', courseRouter);
 app.use('/task', taskRouter);
 app.use('/admin', adminRouter);
 app.use('/admin', adminAuthRouter);
+app.use('/teacher', teacherRouter);
 
 // Health check
 app.get('/', (req, res) => {

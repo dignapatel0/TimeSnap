@@ -16,10 +16,18 @@ export const StudentTimesheet = ({ courseId }: { courseId: number }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/task/course/${courseId}`)
+    axios.get(`http://localhost:5000/teacher/course/${courseId}/tasks`)
       .then(res => setTasks(res.data))
       .catch(err => console.error('Error loading tasks:', err));
   }, [courseId]);
+
+  const formatHMS = (minutes: number) => {
+    const sec = minutes * 60;
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
 
   return (
     <div>
@@ -34,14 +42,18 @@ export const StudentTimesheet = ({ courseId }: { courseId: number }) => {
           </tr>
         </thead>
         <tbody>
-          {tasks.map(task => (
-            <tr key={task.id}>
-              <td>{task.title}</td>
-              <td>{task.student.name} ({task.student.email})</td>
-              <td>{task.estimated_time} min</td>
-              <td>{task.elapsed_time} min</td>
-            </tr>
-          ))}
+          {tasks.length === 0 ? (
+            <tr><td colSpan={4} className="text-center text-muted">No tasks found for this course.</td></tr>
+          ) : (
+            tasks.map(task => (
+              <tr key={task.id}>
+                <td>{task.title}</td>
+                <td>{task.student?.name || 'N/A'} ({task.student?.email || '-'})</td>
+                <td>{formatHMS(task.estimated_time)}</td>
+                <td>{formatHMS(task.elapsed_time)}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

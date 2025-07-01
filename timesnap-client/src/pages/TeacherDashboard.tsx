@@ -4,7 +4,7 @@ import { CourseList } from '../components/teacher/CourseList';
 import { StudentTimesheet } from '../components/teacher/StudentTimesheet';
 import { fetchCourses, deleteCourse } from '../api/courseApi';
 import { useAuth } from '../context/AuthContext';
-import { MainLayout } from '../pages/MainLayout'; 
+import { MainLayout } from '../pages/MainLayout';
 import type { Course } from '../types';
 
 const TeacherDashboard = () => {
@@ -51,7 +51,9 @@ const TeacherDashboard = () => {
   return (
     <MainLayout>
       <div className="text-center mb-5">
-        <h2 className="fw-bold" style={{ color: '#6a4c93' }}>👩‍🏫 Welcome Teacher</h2>
+        <h2 className="fw-bold" style={{ color: '#6a4c93' }}>
+          <i className="bi bi-person-badge me-2"></i> Welcome Teacher
+        </h2>
         <p className="text-dark">You can manage your courses and view student timesheets below.</p>
       </div>
 
