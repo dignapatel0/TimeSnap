@@ -25,10 +25,12 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 app.use(cors({
-  origin: 'http://localhost:5173',  // React frontend URL
-  credentials: true                 // allow cookies/session
+  origin: [
+    'http://localhost:5173', // for local dev
+    'https://timesnap-client.vercel.app' // for deployed frontend
+  ],
+  credentials: true
 }));
-
 
 // Session + Flash middleware BEFORE routes
 app.use(session({
