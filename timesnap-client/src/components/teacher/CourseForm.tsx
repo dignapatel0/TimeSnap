@@ -5,7 +5,7 @@ import type { Course } from '../../types';
 
 type Props = {
   onAdd: (course: Course) => void;
-  course: Course | null; // now accepted
+  course: Course | null;
 };
 
 export const CourseForm = ({ onAdd, course }: Props) => {
