@@ -6,10 +6,12 @@ import { AuthLayout } from './AuthLayout';
 export const RegisterForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('Student'); // default role
+  const [role, setRole] = useState('Student');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -31,7 +33,12 @@ export const RegisterForm = () => {
         role
       }, { withCredentials: true });
 
-      navigate('/login');
+      setShowSuccess(true);
+
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/login');
+      }, 1000); // 1 second
     } catch (err: any) {
       console.error('Registration error:', err);
       setError(err.response?.data?.error || 'Something went wrong. Try again.');
@@ -112,6 +119,25 @@ export const RegisterForm = () => {
           Sign Up
         </button>
       </form>
+
+      {/* Success Modal */}
+      {showSuccess && (
+        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content text-center">
+              <div className="modal-header bg-success text-white">
+                <h5 className="modal-title">
+                  <i className="bi bi-check-circle-fill me-2"></i>
+                  Registration Successful
+                </h5>
+              </div>
+              <div className="modal-body">
+                <p>Redirecting to login page...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AuthLayout>
   );
 };
