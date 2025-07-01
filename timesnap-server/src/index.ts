@@ -24,21 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('tiny'));
 
-<<<<<<< HEAD
-// ✅ Updated CORS setup to allow both local and deployed frontend
 app.use(cors({
-  origin: [
-    'http://localhost:5173',                // Local frontend
-    'https://timesnap-client.vercel.app'    // Deployed Vercel frontend
-=======
-app.use(cors({
-  origin: [
-    'http://localhost:5173', // for local dev
-    'https://timesnap-client.vercel.app' // for deployed frontend
->>>>>>> 9002e7d3a5a2a12f038347495433ca2b36dfa79e
-  ],
-  credentials: true
+  origin: 'http://localhost:5173',  // React frontend URL
+  credentials: true                 // allow cookies/session
 }));
+
 
 // Session + Flash middleware BEFORE routes
 app.use(session({
@@ -69,11 +59,7 @@ app.use('/teacher', teacherRouter);
 
 // Health check
 app.get('/', (req, res) => {
-<<<<<<< HEAD
-  res.redirect('/admin/login');
-=======
    res.redirect('/admin/login');
->>>>>>> 9002e7d3a5a2a12f038347495433ca2b36dfa79e
 });
 
 // Start server
