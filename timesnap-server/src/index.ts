@@ -25,8 +25,11 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 app.use(cors({
-  origin: 'http://localhost:5173',  // React frontend URL
-  credentials: true                 // allow cookies/session
+  origin: [
+    'http://localhost:5173',               // local dev
+    'https://timesnap-client.vercel.app'   // your deployed frontend
+  ],
+  credentials: true
 }));
 
 
@@ -34,8 +37,13 @@ app.use(cors({
 app.use(session({
   secret: 'timesnap_secret_key',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: true,       // Needed for HTTPS (Render is HTTPS by default)
+    sameSite: 'none'    // Needed for cross-site cookies (Vercel ↔ Render)
+  }
 }));
+
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.flash = req.flash();
