@@ -10,6 +10,7 @@ import type { Course } from '../types';
 const TeacherDashboard = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
@@ -32,7 +33,12 @@ const TeacherDashboard = () => {
   }, [user]);
 
   const handleAdd = (course: Course) => {
-    setCourses(prev => [...prev, course]);
+    if (editingCourse) {
+      setCourses(prev => prev.map(c => (c.id === course.id ? course : c)));
+      setEditingCourse(null);
+    } else {
+      setCourses(prev => [...prev, course]);
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -48,6 +54,11 @@ const TeacherDashboard = () => {
     }
   };
 
+  const handleEdit = (course: Course) => {
+    setEditingCourse(course);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <MainLayout>
       <div className="text-center mb-5">
@@ -61,10 +72,10 @@ const TeacherDashboard = () => {
         <div className="col-md-6">
           <div className="card shadow-sm" style={{ backgroundColor: '#f3e6ff', border: 'none' }}>
             <div className="card-header fw-bold" style={{ backgroundColor: '#a55eea', color: 'white' }}>
-              ➕ Add Course
+              {editingCourse ? <><i className="bi bi-pencil-square me-2"></i>Edit Course</> : <><i className="bi bi-plus-circle me-2"></i>Add Course</>}
             </div>
             <div className="card-body">
-              <CourseForm onAdd={handleAdd} />
+              <CourseForm onAdd={handleAdd} course={editingCourse} />
             </div>
           </div>
         </div>
@@ -72,7 +83,7 @@ const TeacherDashboard = () => {
         <div className="col-md-6">
           <div className="card shadow-sm" style={{ backgroundColor: '#e0f7f4', border: 'none' }}>
             <div className="card-header fw-bold" style={{ backgroundColor: '#00b894', color: 'white' }}>
-              📚 Your Courses
+              <i className="bi bi-journal-text me-2"></i>Your Courses
             </div>
             <div className="card-body">
               {loading ? (
@@ -82,6 +93,7 @@ const TeacherDashboard = () => {
                   courses={courses}
                   onDelete={handleDelete}
                   onSelect={setSelectedCourseId}
+                  onEdit={handleEdit}
                 />
               ) : (
                 <p className="text-muted">No courses added yet.</p>
@@ -95,7 +107,7 @@ const TeacherDashboard = () => {
         <div className="mt-5">
           <div className="card shadow-sm" style={{ backgroundColor: '#fff8dc', border: 'none' }}>
             <div className="card-header fw-bold" style={{ backgroundColor: '#fdcb6e', color: '#333' }}>
-              ⏱️ Student Timesheet
+              <i className="bi bi-clock-history me-2"></i>Student Timesheet
             </div>
             <div className="card-body">
               <StudentTimesheet courseId={selectedCourseId} />

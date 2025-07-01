@@ -1,17 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { createCourse } from '../../api/courseApi';
+import { createCourse, updateCourse } from '../../api/courseApi';
+import type { Course } from '../../types';
 
 type Props = {
-  onAdd: (course: any) => void;
+  onAdd: (course: Course) => void;
+  course: Course | null; // now accepted
 };
 
-export const CourseForm = ({ onAdd }: Props) => {
+export const CourseForm = ({ onAdd, course }: Props) => {
   const [title, setTitle] = useState('');
   const [code, setCode] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const { user } = useAuth();
+
+  // Fill form when editing
+  useEffect(() => {
+    if (course) {
+      setTitle(course.title);
+      setCode(course.course_code);
+      setStartDate(course.start_date.slice(0, 10)); // YYYY-MM-DD
+      setEndDate(course.end_date.slice(0, 10));
+    } else {
+      setTitle('');
+      setCode('');
+      setStartDate('');
+      setEndDate('');
+    }
+  }, [course]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,16 +46,23 @@ export const CourseForm = ({ onAdd }: Props) => {
     };
 
     try {
-      console.log('Creating course with:', newCourse);
-      const saved = await createCourse(newCourse); // Save to DB
-      onAdd(saved); // Update UI only if backend succeeded
+      let saved;
+      if (course) {
+        // update existing
+        saved = await updateCourse(course.id, newCourse);
+      } else {
+        // create new
+        saved = await createCourse(newCourse);
+      }
+
+      onAdd(saved); // update list
       setTitle('');
       setCode('');
       setStartDate('');
       setEndDate('');
     } catch (err: any) {
-      console.error('Failed to create course:', err.response?.data || err);
-      alert('Failed to create course. Please check the console.');
+      console.error('Failed to save course:', err.response?.data || err);
+      alert('Failed to save course. See console for details.');
     }
   };
 
@@ -61,7 +85,7 @@ export const CourseForm = ({ onAdd }: Props) => {
         <input type="date" className="form-control" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
       </div>
       <button type="submit" className="btn" style={{ backgroundColor: '#6a4c93', color: '#fff' }}>
-        Create Course
+        {course ? 'Update Course' : 'Create Course'}
       </button>
     </form>
   );
